@@ -3,27 +3,6 @@
 - Short list of videos, decoupling, automatically detect play and pause.
 
 ## Usage
-In UITableViewCell:
+In UITableViewCell, create an instance like other view, set the video address when fill data for the cell,  remember to destory the instance when cell release, now do not support the scrollsToTop.
 
--(void)dealloc
-{
-    [videoView destroy];
-}
-
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-
-    videoView = [[ZHShortPlayerView alloc] initWithFrame:CGRectZero withIdentifier:reuseIdentifier];
-    [self addSubview:videoView];
-
-    }
-    return self;
-}
-
--(void)fillData:(VideoModel *)data
-{
-    [videoView setVideoUrl:data.videUrl coverUrl:data.picUrl];
-}
 
