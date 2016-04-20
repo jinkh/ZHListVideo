@@ -152,7 +152,7 @@
 -(void)beginTrack
 {
     //开始滑
-    // NSLog(@"%@滑动开始", _identifier);
+     NSLog(@"%@  beginTrack", _identifier);
 }
 
 
@@ -164,7 +164,7 @@
             [view shutDownPlay];
         }
     }
-    //NSLog(@"%@滑动过程", _identifier);
+    NSLog(@"%@  onTracking", _identifier);
 }
 
 -(void)endTrack
@@ -197,7 +197,7 @@
         [self resetIJKVieoPlayWithUrl:pview.videoUrl];
         [pview play];
     }
-    //NSLog(@"%@滑动结束", _identifier);
+    NSLog(@"%@  endTrack", _identifier);
 }
 
 -(void)becomeVisible
@@ -218,14 +218,14 @@
         [self resetIJKVieoPlayWithUrl:pview.videoUrl];
         [pview play];
     }
-    //NSLog(@"%@切换到--可见", _identifier);
+    NSLog(@"%@  becomeVisible", _identifier);
 }
 
 -(void)becomeInvisible
 {
     //切换到不可见
     [self removeIJKVieoPlayer];
-    //NSLog(@"%@切换到--不可见", _identifier);
+    NSLog(@"%@  becomeInvisible", _identifier);
 }
 
 // 判断View是否显示在屏幕上
