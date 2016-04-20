@@ -137,7 +137,7 @@
 {
     
     if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        if (!manager.videoPlayer.isPlaying) {
+        if (!manager.videoPlayer.isPreparedToPlay) {
             [manager.videoPlayer prepareToPlay];
         } else {
             [manager.videoPlayer play];
