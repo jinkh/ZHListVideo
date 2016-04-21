@@ -62,6 +62,8 @@
     CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ViewController"];
     if (cell == nil) {
         cell = [[CustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ViewController"];
+    } else {
+        [cell stopPlay];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     VideoModel *model = [data objectAtIndex:indexPath.row];

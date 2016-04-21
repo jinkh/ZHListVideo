@@ -43,9 +43,15 @@
     
     titleLabel.frame = CGRectMake(10, 10, [[UIScreen mainScreen] bounds].size.width-20, 30);
     titleLabel.text = data.title;
+    titleLabel.hidden = YES;
     
     videoView.frame = CGRectMake(0, 40, data.picFixWidth, data.picFixHeight);
     [videoView setVideoUrl:data.videUrl coverUrl:data.picUrl];
+}
+
+-(void)stopPlay
+{
+    [videoView stopPlay];
 }
 
 +(CGFloat)heightForCellWithData:(VideoModel *)data

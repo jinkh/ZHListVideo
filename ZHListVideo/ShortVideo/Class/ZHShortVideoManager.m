@@ -40,7 +40,7 @@
 {
     if (self = [super init]) {
         
-        timer = [NSTimer scheduledTimerWithTimeInterval:.5
+        timer = [NSTimer scheduledTimerWithTimeInterval:.3
                                                  target:self
                                                selector:@selector(checkPlayState)
                                                userInfo:nil
@@ -89,7 +89,7 @@
 
 -(void)resetIJKVieoPlayWithUrl:(NSString *)url
 {
-    if (![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
+    if (_videoPlayer == nil || _videoPlayer.view.superview == nil || ![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
         [self removeIJKVieoPlayer];
         _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:url];
         _videoPlayer.view.userInteractionEnabled = NO;
