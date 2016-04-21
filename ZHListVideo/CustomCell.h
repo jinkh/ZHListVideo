@@ -15,6 +15,4 @@
 
 +(CGFloat)heightForCellWithData:(VideoModel *)data;
 
--(void)stopPlay;
-
 @end

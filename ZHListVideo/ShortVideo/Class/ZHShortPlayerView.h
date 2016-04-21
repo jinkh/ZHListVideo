@@ -20,8 +20,6 @@
 
 -(void)play;
 
--(void)stopPlay;
-
 -(void)shutDownPlay;
 
 -(void)resumePlay;

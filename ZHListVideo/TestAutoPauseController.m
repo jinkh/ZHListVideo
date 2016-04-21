@@ -52,8 +52,6 @@
     CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TestAutoPauseController"];
     if (cell == nil) {
         cell = [[CustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TestAutoPauseController"];
-    } else {
-        [cell stopPlay];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     VideoModel *model = [data objectAtIndex:indexPath.row];

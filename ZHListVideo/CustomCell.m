@@ -49,11 +49,6 @@
     [videoView setVideoUrl:data.videUrl coverUrl:data.picUrl];
 }
 
--(void)stopPlay
-{
-    [videoView stopPlay];
-}
-
 +(CGFloat)heightForCellWithData:(VideoModel *)data
 {
     return 10+30+data.picFixHeight;

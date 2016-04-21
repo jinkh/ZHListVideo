@@ -191,7 +191,7 @@
     if (pview) {
         for (ZHShortPlayerView *view in dataArrray) {
             if (view != pview) {
-                [view stopPlay];
+                [view shutDownPlay];
             }
         }
         [self resetIJKVieoPlayWithUrl:pview.videoUrl];

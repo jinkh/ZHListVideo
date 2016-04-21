@@ -77,7 +77,7 @@
 -(void)setVideoUrl:(NSString *)sourceUrl coverUrl:(NSString *)coverUrl
 {
     if (manager.videoPlayer.view.superview == self) {
-        [self stopPlay];
+        [self shutDownPlay];
     }
     _videoUrl = [[NSString alloc] initWithFormat:@"%@",sourceUrl];
     [controllView setFrame:self.bounds];
@@ -106,15 +106,6 @@
     }
     [controllView setControllState:ShortControllStateNormal];
     
-}
-
--(void)stopPlay
-{
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        [manager.videoPlayer stop];
-        [manager.videoPlayer.view removeFromSuperview];
-    }
-    [controllView setControllState:ShortControllStateNormal];
 }
 
 -(void)pausePlay
