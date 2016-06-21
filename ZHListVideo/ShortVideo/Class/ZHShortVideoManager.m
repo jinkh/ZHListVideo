@@ -40,7 +40,7 @@
 {
     if (self = [super init]) {
         
-        timer = [NSTimer scheduledTimerWithTimeInterval:.3
+        timer = [NSTimer timerWithTimeInterval:.3
                                                  target:self
                                                selector:@selector(checkPlayState)
                                                userInfo:nil

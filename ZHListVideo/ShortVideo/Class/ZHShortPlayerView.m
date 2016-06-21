@@ -126,7 +126,7 @@
 
 -(void)play
 {
-    
+    NSLog(@"---player--window = %@", NSStringFromClass([self.superview class]));
     if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
         if (!manager.videoPlayer.isPreparedToPlay) {
             [manager.videoPlayer prepareToPlay];
