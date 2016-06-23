@@ -94,7 +94,6 @@
 		5AB2D0D81D1B90B500B106FB /* IJKMediaModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IJKMediaModule.m; sourceTree = "<group>"; };
 		5AB2D0D91D1B90B500B106FB /* IJKMediaPlayback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJKMediaPlayback.h; sourceTree = "<group>"; };
 		5AB2D0DA1D1B90B500B106FB /* IJKMediaPlayback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IJKMediaPlayback.m; sourceTree = "<group>"; };
-		5AB2D0DB1D1B90B500B106FB /* IJKMediaPlayer-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IJKMediaPlayer-Prefix.pch"; sourceTree = "<group>"; };
 		5AB2D0DC1D1B90B500B106FB /* IJKMediaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJKMediaPlayer.h; sourceTree = "<group>"; };
 		5AB2D0DD1D1B90B500B106FB /* IJKMediaUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJKMediaUtils.h; sourceTree = "<group>"; };
 		5AB2D0DE1D1B90B500B106FB /* IJKMediaUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IJKMediaUtils.m; sourceTree = "<group>"; };
@@ -169,7 +168,6 @@
 				5AB2D0D81D1B90B500B106FB /* IJKMediaModule.m */,
 				5AB2D0D91D1B90B500B106FB /* IJKMediaPlayback.h */,
 				5AB2D0DA1D1B90B500B106FB /* IJKMediaPlayback.m */,
-				5AB2D0DB1D1B90B500B106FB /* IJKMediaPlayer-Prefix.pch */,
 				5AB2D0DC1D1B90B500B106FB /* IJKMediaPlayer.h */,
 				5AB2D0DD1D1B90B500B106FB /* IJKMediaUtils.h */,
 				5AB2D0DE1D1B90B500B106FB /* IJKMediaUtils.m */,
