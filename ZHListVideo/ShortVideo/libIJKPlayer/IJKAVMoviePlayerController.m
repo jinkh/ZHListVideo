@@ -230,7 +230,7 @@ static IJKAVMoviePlayerController* instance;
 - (void)setScreenOn: (BOOL)on
 {
     //[IJKMediaModule sharedModule].mediaModuleIdleTimerDisabled = on;
-    // [UIApplication sharedApplication].idleTimerDisabled = on;
+     [UIApplication sharedApplication].idleTimerDisabled = on;
 }
 
 - (void)dealloc
