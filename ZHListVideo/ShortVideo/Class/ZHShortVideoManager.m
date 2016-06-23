@@ -117,6 +117,15 @@
 {
     @autoreleasepool {
         
+        BOOL transing = NO;
+        if ([[UIApplication sharedApplication].keyWindow.rootViewController isKindOfClass:[UINavigationController class]]) {
+            transing = ((UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController).interactivePopGestureRecognizer.state == UIGestureRecognizerStateChanged;
+        }
+        NSLog(@"transing = %d", transing);
+        if (transing) {
+            return;
+        }
+        
         //页面切换后，不可见
         ZHShortPlayerView *chekView = dataArrray.firstObject;
         BOOL showInWindow = chekView.window == nil ? NO : YES;
@@ -203,7 +212,6 @@
 -(void)becomeVisible
 {
     //切换到可见
-    
     ZHShortPlayerView *pview = nil;
     CGPoint lastPos =CGPointZero;
     for (ZHShortPlayerView *view in dataArrray) {
