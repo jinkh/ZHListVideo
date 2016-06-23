@@ -29,9 +29,6 @@
 
 + (IJKAudioKit *)sharedInstance;
 - (void)setupAudioSession;
-
-- (void)setupMuteAudioSession;
-
 - (BOOL)setActive:(BOOL)active;
 
 @end

@@ -1,5 +1,5 @@
 /*
- * IJKMediaUtils.h
+ * IJKMediaModule.h
  *
  * Copyright (c) 2013 Zhang Rui <bbcallen@gmail.com>
  *
@@ -22,11 +22,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface IJKMediaUtils : NSObject
+@interface IJKMediaModule : NSObject
 
-+ (NSError*)createErrorWithDomain: (NSString*)domain
-                             code: (NSInteger)code
-                      description: (NSString*)description
-                           reason: (NSString*)reason;
++ (IJKMediaModule *)sharedModule;
+
+@property(atomic, getter=isAppIdleTimerDisabled)            BOOL appIdleTimerDisabled;
+@property(atomic, getter=isMediaModuleIdleTimerDisabled)    BOOL mediaModuleIdleTimerDisabled;
 
 @end

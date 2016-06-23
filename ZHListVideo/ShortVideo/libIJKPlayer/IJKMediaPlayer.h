@@ -1,5 +1,5 @@
 /*
- * IJKMediaUtils.h
+ * IJKMediaPlayer.h
  *
  * Copyright (c) 2013 Zhang Rui <bbcallen@gmail.com>
  *
@@ -20,13 +20,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#import <Foundation/Foundation.h>
+#import "IJKMediaPlayback.h"
+#import "IJKMPMoviePlayerController.h"
 
-@interface IJKMediaUtils : NSObject
+#import "IJKFFOptions.h"
+#import "IJKFFMoviePlayerController.h"
 
-+ (NSError*)createErrorWithDomain: (NSString*)domain
-                             code: (NSInteger)code
-                      description: (NSString*)description
-                           reason: (NSString*)reason;
+#import "IJKAVMoviePlayerController.h"
 
-@end
+#import "IJKMediaModule.h"

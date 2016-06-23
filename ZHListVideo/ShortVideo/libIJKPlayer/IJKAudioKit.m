@@ -64,33 +64,6 @@
     return ;
 }
 
-
-- (void)setupMuteAudioSession
-{
-    if (!_audioSessionInitialized) {
-        [[NSNotificationCenter defaultCenter] addObserver: self
-                                                 selector: @selector(handleInterruption:)
-                                                     name: AVAudioSessionInterruptionNotification
-                                                   object: [AVAudioSession sharedInstance]];
-        _audioSessionInitialized = YES;
-    }
-    
-    /* Set audio session to mediaplayback */
-    NSError *error = nil;
-    if (NO == [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:&error]) {
-        NSLog(@"IJKAudioKit: AVAudioSession.setCategory() failed: %@\n", error ? [error localizedDescription] : @"nil");
-        return;
-    }
-    
-    error = nil;
-    if (NO == [[AVAudioSession sharedInstance] setActive:YES error:&error]) {
-        NSLog(@"IJKAudioKit: AVAudioSession.setActive(YES) failed: %@\n", error ? [error localizedDescription] : @"nil");
-        return;
-    }
-    
-    return ;
-}
-
 - (BOOL)setActive:(BOOL)active
 {
     if (active != NO) {

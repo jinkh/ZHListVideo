@@ -1,7 +1,7 @@
 /*
- * IJKMediaUtils.h
+ * NSString+IJKMedia.h
  *
- * Copyright (c) 2013 Zhang Rui <bbcallen@gmail.com>
+ * Copyright (c) 2016 Zhang Rui <bbcallen@gmail.com>
  *
  * This file is part of ijkPlayer.
  *
@@ -22,11 +22,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface IJKMediaUtils : NSObject
+@interface NSString (IJKMedia)
 
-+ (NSError*)createErrorWithDomain: (NSString*)domain
-                             code: (NSInteger)code
-                      description: (NSString*)description
-                           reason: (NSString*)reason;
++ (NSString *) ijk_stringBeEmptyIfNil:(NSString *)src;
+
+- (BOOL) ijk_isIpv4;
 
 @end
