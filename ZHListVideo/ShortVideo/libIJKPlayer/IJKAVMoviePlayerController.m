@@ -1028,6 +1028,9 @@ static IJKAVMoviePlayerController* instance;
 
 - (void)applicationWillResignActive
 {
+    if (_pauseInBackground && ![self airPlayMediaActive]) {
+        [self pause];
+    }
     NSLog(@"IJKAVMoviePlayerController:applicationWillResignActive: %d\n", (int)[UIApplication sharedApplication].applicationState);
 }
 
