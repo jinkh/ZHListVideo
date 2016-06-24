@@ -238,6 +238,7 @@ static IJKAVMoviePlayerController* instance;
 - (void)dealloc
 {
     [self shutdown];
+    NSLog(@"release class:%@",NSStringFromClass([self class]));
 }
 
 - (void)prepareToPlay
