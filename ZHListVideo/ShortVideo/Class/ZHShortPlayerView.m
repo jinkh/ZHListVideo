@@ -79,14 +79,16 @@
 //内容设置
 -(void)setVideoUrl:(NSString *)sourceUrl coverUrl:(NSString *)coverUrl
 {
-    //来自重用cell，并且实在播放，先停止播放
-    if (_videoUrl.length > 0 && isCurrentPlay) {
-        [self shutDownPlay];
+    @synchronized(_videoUrl) {
+        //来自重用cell，并且实在播放，先停止播放
+        if (_videoUrl.length > 0 && isCurrentPlay) {
+            [self shutDownPlay];
+        }
+        _videoUrl = [[NSString alloc] initWithFormat:@"%@",sourceUrl];
+        [controllView setFrame:self.bounds];
+        [controllView setCoverimageUrl:coverUrl];
+        [controllView setControllState:ShortControllStateNormal];
     }
-    _videoUrl = [[NSString alloc] initWithFormat:@"%@",sourceUrl];
-    [controllView setFrame:self.bounds];
-    [controllView setCoverimageUrl:coverUrl];
-    [controllView setControllState:ShortControllStateNormal];
 }
 
 -(void)pasuseOrPlay
