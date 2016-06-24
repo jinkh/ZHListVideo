@@ -15,13 +15,15 @@
 {
     NSMutableArray *dataArrray;
     
-    NSTimer *timer;
+    CFRunLoopObserverRef observe;
     
     BOOL  isTracking;
     
     BOOL  isShowInWindow;
     
     NSMutableArray *_registeredNotifications;
+    
+    BOOL shouldCheckOnTracking;
     
 }
 @end
@@ -33,19 +35,20 @@
 {
     NSLog(@"release class:%@",NSStringFromClass([self class]));
     [self unregisterApplicationObservers];
-    [timer invalidate];
+    CFRunLoopRemoveObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
 }
 
 -(instancetype)initWithIdentifier:(NSString *)ident
 {
     if (self = [super init]) {
         
-        timer = [NSTimer timerWithTimeInterval:.3
-                                                 target:self
-                                               selector:@selector(checkPlayState)
-                                               userInfo:nil
-                                                repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+        //监听滑动状态变化
+        observe = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+            [self checkPlayState];
+        });
+        
+        CFRunLoopAddObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
+        CFRelease(observe);
         
         dataArrray = [[NSMutableArray alloc] init];
         isTracking = NO;
@@ -84,7 +87,6 @@
 -(void)removeAllPlayerView
 {
     [dataArrray removeAllObjects];
-     [timer invalidate];
 }
 
 -(void)resetIJKVieoPlayWithUrl:(NSString *)url
@@ -122,7 +124,9 @@
         //系统的滑动返回过程忽略,如使用的UINavigationController+FDFullscreenPopGesture,请切换为fd_fullscreenPopGestureRecognizer
         BOOL transing = NO;
         if ([[UIApplication sharedApplication].keyWindow.rootViewController isKindOfClass:[UINavigationController class]]) {
-            transing = ((UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController).interactivePopGestureRecognizer.state == UIGestureRecognizerStateChanged;
+            UIGestureRecognizerState state = ((UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController).interactivePopGestureRecognizer.state;
+            
+            transing =  (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged);
         }
         if (transing) {
             return;
@@ -153,8 +157,7 @@
             [self onTracking];
         }
         if (!tracking && isTracking) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self];
-            [self performSelector:@selector(endTrack) withObject:nil afterDelay:.2];
+            [self endTrack];
         }
         isTracking = tracking;
         
@@ -164,6 +167,7 @@
 -(void)beginTrack
 {
     //开始滑
+    shouldCheckOnTracking = YES;
      NSLog(@"%@  beginTrack", _identifier);
 }
 
@@ -171,10 +175,12 @@
 -(void)onTracking
 {
     //滑动过程
-    for (ZHShortPlayerView *view in dataArrray) {
-        if (![self isDisplayedInScreen:view]) {
+
+    if (shouldCheckOnTracking && ![self isDisplayedInScreen:_videoPlayer.view]) {
+        for (ZHShortPlayerView *view in dataArrray) {
             [view shutDownPlay];
         }
+        shouldCheckOnTracking = NO;
     }
     NSLog(@"%@  onTracking", _identifier);
 }
@@ -182,7 +188,7 @@
 -(void)endTrack
 {
     //滑动结束
-    
+    shouldCheckOnTracking = NO;
     for (ZHShortPlayerView *view in dataArrray) {
         if (![self isDisplayedInScreen:view]) {
             [view shutDownPlay];
