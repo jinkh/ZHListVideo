@@ -153,7 +153,8 @@
             [self onTracking];
         }
         if (!tracking && isTracking) {
-            [self endTrack];
+            [NSObject cancelPreviousPerformRequestsWithTarget:self];
+            [self performSelector:@selector(endTrack) withObject:nil afterDelay:.2];
         }
         isTracking = tracking;
         
@@ -201,7 +202,7 @@
     
     if (pview) {
         for (ZHShortPlayerView *view in dataArrray) {
-            if (view != pview && [self isDisplayedInScreen:view]) {
+            if (view != pview) {
                 [view shutDownPlay];
             }
         }

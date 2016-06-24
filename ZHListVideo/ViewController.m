@@ -38,6 +38,7 @@
     myTableView.dataSource = self;
     myTableView.scrollsToTop = NO;
     myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [myTableView setContentInset:UIEdgeInsetsMake(30, 0, 0, 0)];
     [self.view addSubview:myTableView];
     
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"jump" style:UIBarButtonItemStylePlain target:self action:@selector(jumpAction:)];
