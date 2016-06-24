@@ -210,7 +210,7 @@
     
     if (pview) {
         for (ZHShortPlayerView *view in dataArrray) {
-            if (view != pview && ![view.videoUrl isEqualToString:pview.videoUrl]) {
+            if (view != pview) {
                 [view shutDownPlay];
             }
         }
