@@ -121,7 +121,6 @@
         if ([[UIApplication sharedApplication].keyWindow.rootViewController isKindOfClass:[UINavigationController class]]) {
             transing = ((UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController).interactivePopGestureRecognizer.state == UIGestureRecognizerStateChanged;
         }
-        NSLog(@"transing = %d", transing);
         if (transing) {
             return;
         }

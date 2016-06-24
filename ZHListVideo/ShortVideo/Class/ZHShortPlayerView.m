@@ -128,7 +128,7 @@
 {
     NSLog(@"---player--window = %@", NSStringFromClass([self.superview class]));
     if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        if (!manager.videoPlayer.isPreparedToPlay) {
+        if (manager.videoPlayer.currentPlaybackTime <= 0) {
             [manager.videoPlayer prepareToPlay];
         } else {
             [manager.videoPlayer play];
@@ -156,7 +156,7 @@
             return;
         }
         //加载状态
-        if (!manager.videoPlayer.isPreparedToPlay) {
+        if (manager.videoPlayer.currentPlaybackTime <= 0) {
             if (controllView.controllState != ShortControllStateLoading) {
                 [controllView setControllState:ShortControllStateLoading];
             }
