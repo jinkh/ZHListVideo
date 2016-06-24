@@ -96,24 +96,28 @@
     if (state == ShortControllStateNormal) {
         coverImageView.hidden = NO;
         [loadingIndicator stopAnimating];
+         loadingIndicator.hidden = YES;
         indictorImage.hidden = NO;
         coverMask.hidden = NO;
         [self.superview bringSubviewToFront:self];
     } else if (state == ShortControllStateLoading) {
         coverImageView.hidden = NO;
         [loadingIndicator startAnimating];
+        loadingIndicator.hidden = NO;
         indictorImage.hidden = YES;
         coverMask.hidden = YES;
-        [self.superview bringSubviewToFront:self];
+        //[self.superview bringSubviewToFront:self];
     } else if (state == ShortControllStatePlaying) {
         coverImageView.hidden = YES;
         [loadingIndicator stopAnimating];
+        loadingIndicator.hidden = YES;
         indictorImage.hidden = YES;
         coverMask.hidden = YES;
-        [self.superview bringSubviewToFront:self];
+        //[self.superview bringSubviewToFront:self];
     }  else if (state == ShortControllStatePaused) {
         coverImageView.hidden = YES;
         [loadingIndicator stopAnimating];
+        loadingIndicator.hidden = YES;
         indictorImage.hidden = NO;
         coverMask.hidden = NO;
         [self.superview bringSubviewToFront:self];
