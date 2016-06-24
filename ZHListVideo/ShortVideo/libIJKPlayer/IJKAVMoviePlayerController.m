@@ -297,6 +297,7 @@ static IJKAVMoviePlayerController* instance;
 
 - (void)shutdown
 {
+    [self.view removeFromSuperview];
     _isShutdown = YES;
     _playUrl = nil;
     [self stop];

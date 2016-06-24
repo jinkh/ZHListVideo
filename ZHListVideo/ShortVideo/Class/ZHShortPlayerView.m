@@ -111,7 +111,6 @@
     @synchronized(_videoUrl) {
         if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
             [manager.videoPlayer shutdown];
-            [manager.videoPlayer.view removeFromSuperview];
         }
         [controllView setControllState:ShortControllStateNormal];
         isCurrentPlay = NO;
