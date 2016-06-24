@@ -90,18 +90,20 @@
 -(void)resetIJKVieoPlayWithUrl:(NSString *)url
 {
     if (_videoPlayer == nil || _videoPlayer.view.superview == nil || ![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
-        [self removeIJKVieoPlayer];
-        _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:url];
-        _videoPlayer.view.userInteractionEnabled = NO;
-        _videoPlayer.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        _videoPlayer.scalingMode = IJKMPMovieScalingModeAspectFit;
-        _videoPlayer.view.autoresizesSubviews = YES;
-        _videoPlayer.shouldAutoplay = YES;
-        _videoPlayer.repeat = YES;
-        [_videoPlayer setPauseInBackground:YES];
-        _videoPlayer.view.backgroundColor = [UIColor clearColor];
-        for(UIView *aSubView in _videoPlayer.view.subviews) {
-            aSubView.backgroundColor = [UIColor clearColor];
+        @autoreleasepool {
+            [self removeIJKVieoPlayer];
+            _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:url];
+            _videoPlayer.view.userInteractionEnabled = NO;
+            _videoPlayer.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            _videoPlayer.scalingMode = IJKMPMovieScalingModeAspectFit;
+            _videoPlayer.view.autoresizesSubviews = YES;
+            _videoPlayer.shouldAutoplay = YES;
+            _videoPlayer.repeat = YES;
+            [_videoPlayer setPauseInBackground:YES];
+            _videoPlayer.view.backgroundColor = [UIColor clearColor];
+            for(UIView *aSubView in _videoPlayer.view.subviews) {
+                aSubView.backgroundColor = [UIColor clearColor];
+            }
         }
     }
 }

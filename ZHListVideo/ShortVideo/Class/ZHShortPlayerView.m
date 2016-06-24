@@ -41,7 +41,7 @@
 -(instancetype)init
 {
     if (self = [self initWithFrame:CGRectZero]) {
-
+        
     }
     return self;
 }
@@ -53,7 +53,7 @@
         self.backgroundColor = [UIColor blackColor];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
-
+        
         _identifier = [[NSString alloc] initWithFormat:@"%@", ident];
         
         manager = [[ZHShortVideoManagerDequeue sharecInstance] dequeueManagerWithIdentifier:_identifier];
@@ -63,7 +63,7 @@
         __weak ZHShortPlayerView *weakSelf = self;
         controllView.playOrPauseBlock = ^{
             [weakSelf pasuseOrPlay];
- 
+            
         };
         [self addSubview:controllView];
     }
@@ -91,12 +91,14 @@
 
 -(void)pasuseOrPlay
 {
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        if (manager.videoPlayer.currentPlaybackTime > 0) {
-            if (manager.videoPlayer.isPlaying) {
-                [self pausePlay];
-            } else {
-                [self resumePlay];
+    @synchronized(_videoUrl) {
+        if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
+            if (manager.videoPlayer.currentPlaybackTime > 0) {
+                if (manager.videoPlayer.isPlaying) {
+                    [self pausePlay];
+                } else {
+                    [self resumePlay];
+                }
             }
         }
     }
@@ -104,83 +106,93 @@
 
 -(void)shutDownPlay
 {
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        [manager.videoPlayer shutdown];
-        [manager.videoPlayer.view removeFromSuperview];
+    @synchronized(_videoUrl) {
+        if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
+            [manager.videoPlayer shutdown];
+            [manager.videoPlayer.view removeFromSuperview];
+        }
+        [controllView setControllState:ShortControllStateNormal];
+        isCurrentPlay = NO;
     }
-    [controllView setControllState:ShortControllStateNormal];
-    isCurrentPlay = NO;
 }
 
 -(void)pausePlay
 {
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        [manager.videoPlayer pause];
+    @synchronized(_videoUrl) {
+        if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
+            [manager.videoPlayer pause];
+        }
+        [controllView setControllState:ShortControllStatePaused];
     }
-    [controllView setControllState:ShortControllStatePaused];
 }
 
 -(void)resumePlay
 {
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        [manager.videoPlayer play];
+    @synchronized(_videoUrl) {
+        if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
+            [manager.videoPlayer play];
+        }
+        [controllView setControllState:ShortControllStatePlaying];
     }
-    [controllView setControllState:ShortControllStatePlaying];
 }
 
 -(void)play
 {
-    NSLog(@"---player--window = %@", NSStringFromClass([self.superview class]));
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        if (manager.videoPlayer.currentPlaybackTime <= 0) {
-            [manager.videoPlayer prepareToPlay];
-        } else {
-            [manager.videoPlayer play];
+    @synchronized(_videoUrl) {
+        NSLog(@"---player--window = %@", NSStringFromClass([self.superview class]));
+        if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
+            if (manager.videoPlayer.currentPlaybackTime <= 0) {
+                [manager.videoPlayer prepareToPlay];
+            } else {
+                [manager.videoPlayer play];
+            }
+            [manager.videoPlayer.view removeFromSuperview];
+            [self addSubview:manager.videoPlayer.view];
         }
-        [manager.videoPlayer.view removeFromSuperview];
-        [self addSubview:manager.videoPlayer.view];
+        
+        manager.videoPlayer.view.frame = self.bounds;
+        controllView.frame = self.bounds;
+        [controllView setControllState:ShortControllStateLoading];
+        isCurrentPlay = YES;
     }
-
-    manager.videoPlayer.view.frame = self.bounds;
-    controllView.frame = self.bounds;
-    [controllView setControllState:ShortControllStateLoading];
-    isCurrentPlay = YES;
 }
 
 -(void)refreshControllView
 {
-    //保证controllView状态正确
-    if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
-        //播放状态
-        if (manager.videoPlayer.isPlaying) {
-            
-            if (controllView.controllState != ShortControllStatePlaying) {
-                [controllView setControllState:ShortControllStatePlaying];
+    @synchronized(_videoUrl) {
+        //保证controllView状态正确
+        if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
+            //播放状态
+            if (manager.videoPlayer.isPlaying) {
+                
+                if (controllView.controllState != ShortControllStatePlaying) {
+                    [controllView setControllState:ShortControllStatePlaying];
+                }
+                
+                return;
             }
-            
-            return;
-        }
-        //加载状态
-        if (manager.videoPlayer.currentPlaybackTime <= 0) {
-            if (controllView.controllState != ShortControllStateLoading) {
-                [controllView setControllState:ShortControllStateLoading];
+            //加载状态
+            if (manager.videoPlayer.currentPlaybackTime <= 0) {
+                if (controllView.controllState != ShortControllStateLoading) {
+                    [controllView setControllState:ShortControllStateLoading];
+                }
+                return;
             }
-            return;
-        }
-        //暂停状态
-        if ((manager.videoPlayer.playbackState == IJKMPMoviePlaybackStatePaused)) {
-            if (controllView.controllState != ShortControllStatePaused) {
-                [controllView setControllState:ShortControllStatePaused];
+            //暂停状态
+            if ((manager.videoPlayer.playbackState == IJKMPMoviePlaybackStatePaused)) {
+                if (controllView.controllState != ShortControllStatePaused) {
+                    [controllView setControllState:ShortControllStatePaused];
+                }
+                return;
             }
-            return;
-        }
-        //正常状态
-        if (controllView.controllState != ShortControllStateNormal) {
-            [controllView setControllState:ShortControllStateNormal];
-        }
-    } else {
-        if (controllView.controllState != ShortControllStateNormal) {
-            [controllView setControllState:ShortControllStateNormal];
+            //正常状态
+            if (controllView.controllState != ShortControllStateNormal) {
+                [controllView setControllState:ShortControllStateNormal];
+            }
+        } else {
+            if (controllView.controllState != ShortControllStateNormal) {
+                [controllView setControllState:ShortControllStateNormal];
+            }
         }
     }
 }
