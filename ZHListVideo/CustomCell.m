@@ -27,7 +27,6 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        
         videoView = [[ZHShortPlayerView alloc] initWithFrame:CGRectZero withIdentifier:reuseIdentifier];
         [self addSubview:videoView];
         
@@ -41,17 +40,17 @@
 -(void)fillData:(VideoModel *)data
 {
     
-    titleLabel.frame = CGRectMake(10, 10, [[UIScreen mainScreen] bounds].size.width-20, 30);
+    titleLabel.frame = CGRectMake(10, 10, [[UIScreen mainScreen] bounds].size.width-20, 0);
     titleLabel.text = data.title;
     titleLabel.hidden = YES;
     
-    videoView.frame = CGRectMake(0, 40, data.picFixWidth, data.picFixHeight);
+    videoView.frame = CGRectMake(0, 10, data.picFixWidth, data.picFixHeight);
     [videoView setVideoUrl:data.videUrl coverUrl:data.picUrl];
 }
 
 +(CGFloat)heightForCellWithData:(VideoModel *)data
 {
-    return 10+30+data.picFixHeight;
+    return 10+0+data.picFixHeight;
 }
 
 @end

@@ -37,7 +37,7 @@
     myTableView.delegate = self;
     myTableView.dataSource = self;
     myTableView.scrollsToTop = NO;
-    myTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:myTableView];
     
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"jump" style:UIBarButtonItemStylePlain target:self action:@selector(jumpAction:)];

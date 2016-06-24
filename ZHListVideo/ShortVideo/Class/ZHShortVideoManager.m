@@ -201,7 +201,7 @@
     
     if (pview) {
         for (ZHShortPlayerView *view in dataArrray) {
-            if (view != pview) {
+            if (view != pview && [self isDisplayedInScreen:view]) {
                 [view shutDownPlay];
             }
         }
