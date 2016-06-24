@@ -161,7 +161,7 @@
         if (!tracking && isTracking) {
             //添加延时，避免在setVideoUrl
             [NSObject cancelPreviousPerformRequestsWithTarget:self];
-            [self performSelector:@selector(endTrack) withObject:nil afterDelay:.5];
+            [self performSelector:@selector(endTrack) withObject:nil afterDelay:.3];
         }
         isTracking = tracking;
         
@@ -210,7 +210,7 @@
     
     if (pview) {
         for (ZHShortPlayerView *view in dataArrray) {
-            if (view != pview) {
+            if (view != pview && ![view.videoUrl isEqualToString:pview.videoUrl]) {
                 [view shutDownPlay];
             }
         }
