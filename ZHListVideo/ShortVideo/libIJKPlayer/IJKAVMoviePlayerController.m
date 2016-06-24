@@ -298,6 +298,7 @@ static IJKAVMoviePlayerController* instance;
 - (void)shutdown
 {
     _isShutdown = YES;
+    _playUrl = nil;
     [self stop];
     
     if (_playerItem != nil) {
