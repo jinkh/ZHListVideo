@@ -105,7 +105,7 @@
             _videoPlayer.shouldAutoplay = YES;
             _videoPlayer.repeat = YES;
             [_videoPlayer setPauseInBackground:YES];
-            _videoPlayer.view.backgroundColor = [UIColor redColor];
+            _videoPlayer.view.backgroundColor = [UIColor clearColor];
             for(UIView *aSubView in _videoPlayer.view.subviews) {
                 aSubView.backgroundColor = [UIColor clearColor];
             }
@@ -211,7 +211,7 @@
     
     if (pview) {
         for (ZHShortPlayerView *view in dataArrray) {
-            if (view != pview) {
+            if (view != pview && ![view.videoUrl isEqualToString:_videoPlayer.playUrl.absoluteString]) {
                 [view shutDownPlay];
             }
         }

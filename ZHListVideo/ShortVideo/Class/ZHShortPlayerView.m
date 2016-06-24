@@ -141,6 +141,12 @@
 {
     @synchronized(_videoUrl) {
         NSLog(@"---player--window = %@", NSStringFromClass([self.superview class]));
+        
+        manager.videoPlayer.view.frame = self.bounds;
+        controllView.frame = self.bounds;
+        [controllView setControllState:ShortControllStateLoading];
+        isCurrentPlay = YES;
+        
         if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
             if (manager.videoPlayer.currentPlaybackTime <= 0) {
                 [manager.videoPlayer prepareToPlay];
@@ -150,10 +156,6 @@
             [self addSubview:manager.videoPlayer.view];
         }
         
-        manager.videoPlayer.view.frame = self.bounds;
-        controllView.frame = self.bounds;
-        [controllView setControllState:ShortControllStateLoading];
-        isCurrentPlay = YES;
     }
 }
 

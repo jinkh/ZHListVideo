@@ -104,13 +104,13 @@
         [loadingIndicator startAnimating];
         indictorImage.hidden = YES;
         coverMask.hidden = YES;
-        [self bringSubviewToFront:self];
+        [self.superview bringSubviewToFront:self];
     } else if (state == ShortControllStatePlaying) {
         coverImageView.hidden = YES;
         [loadingIndicator stopAnimating];
         indictorImage.hidden = YES;
         coverMask.hidden = YES;
-        [self bringSubviewToFront:self];
+        [self.superview bringSubviewToFront:self];
     }  else if (state == ShortControllStatePaused) {
         coverImageView.hidden = YES;
         [loadingIndicator stopAnimating];
