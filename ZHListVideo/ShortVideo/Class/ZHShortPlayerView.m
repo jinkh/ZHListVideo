@@ -17,6 +17,8 @@
     
     ZHShortVideoManager *manager;
     
+    BOOL isCurrentPlay;
+    
 }
 
 @end
@@ -47,6 +49,7 @@
 {
     if (self = [super initWithFrame:frame]) {
         _videoUrl = [[NSString alloc] init];
+        isCurrentPlay = NO;
         self.backgroundColor = [UIColor blackColor];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
@@ -76,7 +79,8 @@
 //内容设置
 -(void)setVideoUrl:(NSString *)sourceUrl coverUrl:(NSString *)coverUrl
 {
-    if (manager.videoPlayer.view.superview == self) {
+    //来自重用cell，并且实在播放，先停止播放
+    if (_videoUrl.length > 0 && isCurrentPlay) {
         [self shutDownPlay];
     }
     _videoUrl = [[NSString alloc] initWithFormat:@"%@",sourceUrl];
@@ -105,7 +109,7 @@
         [manager.videoPlayer.view removeFromSuperview];
     }
     [controllView setControllState:ShortControllStateNormal];
-    
+    isCurrentPlay = NO;
 }
 
 -(void)pausePlay
@@ -140,6 +144,7 @@
     manager.videoPlayer.view.frame = self.bounds;
     controllView.frame = self.bounds;
     [controllView setControllState:ShortControllStateLoading];
+    isCurrentPlay = YES;
 }
 
 -(void)refreshControllView

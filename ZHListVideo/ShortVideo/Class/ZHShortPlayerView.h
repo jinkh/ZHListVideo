@@ -32,7 +32,7 @@
 
 @property (strong, readonly)  NSString *identifier;
 
-@property (strong, readonly)  NSString *videoUrl;
+@property (strong, readonly, atomic)  NSString *videoUrl;
 
 @end
 
