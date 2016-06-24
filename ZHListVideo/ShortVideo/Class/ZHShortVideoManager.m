@@ -117,6 +117,7 @@
 {
     @autoreleasepool {
         
+        //系统的滑动返回过程忽略,如使用的UINavigationController+FDFullscreenPopGesture,请切换为fd_fullscreenPopGestureRecognizer
         BOOL transing = NO;
         if ([[UIApplication sharedApplication].keyWindow.rootViewController isKindOfClass:[UINavigationController class]]) {
             transing = ((UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController).interactivePopGestureRecognizer.state == UIGestureRecognizerStateChanged;
