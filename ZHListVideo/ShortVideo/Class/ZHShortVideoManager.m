@@ -36,6 +36,7 @@
     NSLog(@"release class:%@",NSStringFromClass([self class]));
     [self unregisterApplicationObservers];
     CFRunLoopRemoveObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 -(instancetype)initWithIdentifier:(NSString *)ident
@@ -158,7 +159,9 @@
             [self onTracking];
         }
         if (!tracking && isTracking) {
-            [self endTrack];
+            //添加延时，避免在setVideoUrl
+            [NSObject cancelPreviousPerformRequestsWithTarget:self];
+            [self performSelector:@selector(endTrack) withObject:nil afterDelay:.5];
         }
         isTracking = tracking;
         
@@ -189,21 +192,19 @@
 -(void)endTrack
 {
     //滑动结束
+    ZHShortPlayerView *pview = nil;
+    CGPoint lastPos =CGPointZero;
+    
     shouldCheckOnTracking = NO;
     for (ZHShortPlayerView *view in dataArrray) {
         if (![self isDisplayedInScreen:view]) {
             [view shutDownPlay];
-        }
-    }
-    
-    
-    ZHShortPlayerView *pview = nil;
-    CGPoint lastPos =CGPointZero;
-    for (ZHShortPlayerView *view in dataArrray) {
-        CGPoint pos = [view convertPoint:view.center toView:[UIApplication sharedApplication].keyWindow];
-        if (fabs(lastPos.y-CenterY) > fabs(pos.y-CenterY)) {
-            lastPos = pos;
-            pview = view;
+        } else {
+            CGPoint pos = [view convertPoint:view.center toView:[UIApplication sharedApplication].keyWindow];
+            if (fabs(lastPos.y-CenterY) > fabs(pos.y-CenterY)) {
+                lastPos = pos;
+                pview = view;
+            }
         }
     }
     
