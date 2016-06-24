@@ -42,14 +42,6 @@
 {
     if (self = [super init]) {
         
-        //监听滑动状态变化
-        observe = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
-            [self checkPlayState];
-        });
-        
-        CFRunLoopAddObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
-        CFRelease(observe);
-        
         dataArrray = [[NSMutableArray alloc] init];
         isTracking = NO;
         isShowInWindow = NO;
@@ -70,6 +62,15 @@
         }
         objc_setAssociatedObject(_videoPlayer, @"identifier", _identifier, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self registerApplicationObservers];
+        
+        //监听滑动状态变化
+        
+        __weak typeof(self) weakSelf = self;
+        observe = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+            [weakSelf checkPlayState];
+        });
+        CFRunLoopAddObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
+        CFRelease(observe);
     }
     return self;
 }
