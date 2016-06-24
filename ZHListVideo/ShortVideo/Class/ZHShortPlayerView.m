@@ -147,7 +147,6 @@
             } else {
                 [manager.videoPlayer play];
             }
-            [manager.videoPlayer.view removeFromSuperview];
             [self addSubview:manager.videoPlayer.view];
         }
         

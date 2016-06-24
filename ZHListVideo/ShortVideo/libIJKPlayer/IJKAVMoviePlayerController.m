@@ -237,7 +237,7 @@ static IJKAVMoviePlayerController* instance;
 
 - (void)dealloc
 {
-    [self shutdown];
+    //[self shutdown];
     NSLog(@"release class:%@",NSStringFromClass([self class]));
 }
 
@@ -297,6 +297,9 @@ static IJKAVMoviePlayerController* instance;
 
 - (void)shutdown
 {
+    if (_isShutdown) {
+        return;
+    }
     [self.view removeFromSuperview];
     _isShutdown = YES;
     _playUrl = nil;

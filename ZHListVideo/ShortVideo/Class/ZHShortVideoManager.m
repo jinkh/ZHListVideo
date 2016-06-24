@@ -93,8 +93,9 @@
 
 -(void)resetIJKVieoPlayWithUrl:(NSString *)url
 {
-    if (_videoPlayer == nil || _videoPlayer.view.superview == nil || ![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
-        @autoreleasepool {
+
+    @autoreleasepool {
+        if (_videoPlayer == nil || _videoPlayer.view.superview == nil || ![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
             [self removeIJKVieoPlayer];
             _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:url];
             _videoPlayer.view.userInteractionEnabled = NO;
@@ -104,7 +105,7 @@
             _videoPlayer.shouldAutoplay = YES;
             _videoPlayer.repeat = YES;
             [_videoPlayer setPauseInBackground:YES];
-            _videoPlayer.view.backgroundColor = [UIColor clearColor];
+            _videoPlayer.view.backgroundColor = [UIColor redColor];
             for(UIView *aSubView in _videoPlayer.view.subviews) {
                 aSubView.backgroundColor = [UIColor clearColor];
             }
