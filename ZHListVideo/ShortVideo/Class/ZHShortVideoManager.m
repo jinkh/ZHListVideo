@@ -197,7 +197,7 @@
         }
         shouldCheckOnTracking = NO;
     }
-    //NSLog(@"%@  onTracking", _identifier);
+    NSLog(@"%@  onTracking", _identifier);
 }
 
 -(void)endTrack
