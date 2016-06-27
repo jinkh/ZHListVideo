@@ -78,6 +78,12 @@
 
 -(void)addPlayerView:(ZHShortPlayerView *)view
 {
+    for (ZHShortPlayerView *item in dataArrray) {
+        if ([view.videoUrl isEqualToString:item.videoUrl]) {
+            [dataArrray removeObject:item];
+            break;
+        }
+    }
    [dataArrray addObject:view];
 }
 
@@ -191,7 +197,7 @@
         }
         shouldCheckOnTracking = NO;
     }
-    NSLog(@"%@  onTracking", _identifier);
+    //NSLog(@"%@  onTracking", _identifier);
 }
 
 -(void)endTrack

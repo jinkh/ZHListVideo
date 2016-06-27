@@ -57,7 +57,6 @@
         _identifier = [[NSString alloc] initWithFormat:@"%@", ident];
         
         manager = [[ZHShortVideoManagerDequeue sharecInstance] dequeueManagerWithIdentifier:_identifier];
-        [manager addPlayerView:self];
         
         controllView = [[ZHShortControllView alloc] initWithFrame:frame];
         __weak ZHShortPlayerView *weakSelf = self;
@@ -88,6 +87,8 @@
         [controllView setFrame:self.bounds];
         [controllView setCoverimageUrl:coverUrl];
         [controllView setControllState:ShortControllStateNormal];
+        
+        [manager addPlayerView:self];
     }
 }
 
