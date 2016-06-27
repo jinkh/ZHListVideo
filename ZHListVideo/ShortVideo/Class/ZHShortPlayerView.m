@@ -28,8 +28,8 @@
 
 -(void)destroy
 {
-    [[ZHShortVideoManagerDequeue sharecInstance] removeManagerWithIdentifier:_identifier];
-    [manager removeIJKVieoPlayer];
+    [self shutDownPlay];
+    [manager removePlayerView:self];
     
 }
 -(void)dealloc

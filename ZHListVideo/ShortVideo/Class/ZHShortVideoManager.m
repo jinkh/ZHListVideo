@@ -84,6 +84,10 @@
 -(void)removePlayerView:(ZHShortPlayerView *)view
 {
    [dataArrray removeObject:view];
+    
+    if (dataArrray.count <= 0) {
+        [[ZHShortVideoManagerDequeue sharecInstance] removeManagerWithIdentifier:view.identifier];
+    }
 }
 
 -(void)removeAllPlayerView
