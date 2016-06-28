@@ -37,7 +37,6 @@
     myTableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
     myTableView.delegate = self;
     myTableView.dataSource = self;
-    myTableView.scrollsToTop = NO;
     myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:myTableView];
 }
@@ -67,6 +66,10 @@
     return [CustomCell heightForCellWithData:model];
 }
 
+-(void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:ZHScrollToTopNotification object:nil];
+}
 
 @end
 

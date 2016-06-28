@@ -11,6 +11,8 @@
 #import "IJKMPMoviePlayerController.h"
 #import "IJKAVMoviePlayerController.h"
 
+#define ZHScrollToTopNotification   @"ZHScrollToTop"
+
 @interface ZHShortPlayerView : UIImageView
 
 

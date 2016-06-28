@@ -7,7 +7,6 @@
 //
 
 #import "CustomCell.h"
-#import "ZHShortPlayerView.h"
 
 @interface CustomCell()
 {

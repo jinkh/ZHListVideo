@@ -148,11 +148,7 @@
 -(void)becomeVisible
 {
     //切换到可见
-    ZHShortPlayerView *pview = [self getCurrentShouldPlayView];
-    if (pview) {
-        [self resetIJKVieoPlayWithUrl:pview.videoUrl];
-        [pview play];
-    }
+    [self endTrack];
     NSLog(@"%@  becomeVisible", _identifier);
 }
 
@@ -162,6 +158,13 @@
     [_videoPlayer shutdown];
     NSLog(@"%@  becomeInvisible", _identifier);
 }
+
+-(void)didScrollToTop:(NSNotification *)notification
+{
+    [self endTrack];
+    
+}
+
 
 -(void)resetIJKVieoPlayWithUrl:(NSString *)url
 {
@@ -262,6 +265,14 @@
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
     [registeredNotifications addObject:UIApplicationDidEnterBackgroundNotification];
+    
+
+    //监听滚动到顶部
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didScrollToTop:)
+                                                 name:ZHScrollToTopNotification
+                                               object:nil];
+    [registeredNotifications addObject:ZHScrollToTopNotification];
     
     
     //监听滑动状态变化

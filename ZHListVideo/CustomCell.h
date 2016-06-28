@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "VideoModel.h"
+#import "ZHShortPlayerView.h"
 
 @interface CustomCell : UITableViewCell
 
