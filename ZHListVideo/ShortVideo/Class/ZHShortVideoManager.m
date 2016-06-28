@@ -373,7 +373,7 @@ static NSMutableDictionary *resumeManagerData;
     if (tmpValue == nil || tmpValue == [NSNull null])
     {
         ZHShortVideoManager *manager = [[ZHShortVideoManager alloc] initWithIdentifier:identifier];
-        [[ZHShortVideoManagerDequeue sharecInstance] addManager:manager];
+        [self addManager:manager];
         return manager;
     }
     return tmpValue;
