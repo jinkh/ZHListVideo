@@ -13,17 +13,21 @@
 
 @interface ZHShortVideoManager()
 {
-    NSMutableArray *dataArrray;
     
-    CFRunLoopObserverRef observe;
+    
+    BOOL shouldCheckOnTracking;
     
     BOOL  isTracking;
     
     BOOL  isShowInWindow;
     
-    NSMutableArray *_registeredNotifications;
+    NSMutableArray *dataArrray;
     
-    BOOL shouldCheckOnTracking;
+    CFRunLoopObserverRef observe;
+    
+    NSMutableArray *registeredNotifications;
+
+    __weak ZHShortPlayerView *lastView;
     
 }
 @end
@@ -34,99 +38,27 @@
 -(void)dealloc
 {
     NSLog(@"release class:%@",NSStringFromClass([self class]));
-    [self unregisterApplicationObservers];
-    CFRunLoopRemoveObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
-    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [self unregisterObservers];
 }
 
 -(instancetype)initWithIdentifier:(NSString *)ident
 {
     if (self = [super init]) {
-        
-        dataArrray = [[NSMutableArray alloc] init];
+        //初始化变量
         isTracking = NO;
         isShowInWindow = NO;
+        shouldCheckOnTracking = NO;
+        dataArrray = [[NSMutableArray alloc] init];
         _identifier = [[NSString alloc] initWithFormat:@"%@", ident];
-         _registeredNotifications = [[NSMutableArray alloc] init];
+        registeredNotifications = [[NSMutableArray alloc] init];
         
-        _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:@""];
-        _videoPlayer.view.userInteractionEnabled = NO;
-        _videoPlayer.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        _videoPlayer.scalingMode = IJKMPMovieScalingModeAspectFit;
-        _videoPlayer.view.autoresizesSubviews = YES;
-        _videoPlayer.shouldAutoplay = YES;
-        _videoPlayer.repeat = YES;
-        [_videoPlayer setPauseInBackground:YES];
-        _videoPlayer.view.backgroundColor = [UIColor clearColor];
-        for(UIView *aSubView in _videoPlayer.view.subviews) {
-            aSubView.backgroundColor = [UIColor clearColor];
-        }
-        objc_setAssociatedObject(_videoPlayer, @"identifier", _identifier, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [self registerApplicationObservers];
+        //初始化播放器
+        [self resetIJKVieoPlayWithUrl:@""];
         
-        //监听滑动状态变化
-        
-        __weak typeof(self) weakSelf = self;
-        observe = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
-            [weakSelf checkPlayState];
-        });
-        CFRunLoopAddObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
-        CFRelease(observe);
+        //设置监听
+        [self registerObservers];
     }
     return self;
-}
-
--(void)addPlayerView:(ZHShortPlayerView *)view
-{
-    for (ZHShortPlayerView *item in dataArrray) {
-        if ([view.videoUrl isEqualToString:item.videoUrl]) {
-            [dataArrray removeObject:item];
-            break;
-        }
-    }
-   [dataArrray addObject:view];
-}
-
--(void)removePlayerView:(ZHShortPlayerView *)view
-{
-   [dataArrray removeObject:view];
-    
-    if (dataArrray.count <= 0) {
-        [[ZHShortVideoManagerDequeue sharecInstance] removeManagerWithIdentifier:view.identifier];
-    }
-}
-
--(void)removeAllPlayerView
-{
-    [dataArrray removeAllObjects];
-}
-
--(void)resetIJKVieoPlayWithUrl:(NSString *)url
-{
-
-    @autoreleasepool {
-        if (_videoPlayer == nil || _videoPlayer.view.superview == nil || ![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
-            [self removeIJKVieoPlayer];
-            _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:url];
-            _videoPlayer.view.userInteractionEnabled = NO;
-            _videoPlayer.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-            _videoPlayer.scalingMode = IJKMPMovieScalingModeAspectFit;
-            _videoPlayer.view.autoresizesSubviews = YES;
-            _videoPlayer.shouldAutoplay = YES;
-            _videoPlayer.repeat = YES;
-            [_videoPlayer setPauseInBackground:YES];
-            _videoPlayer.view.backgroundColor = [UIColor clearColor];
-            for(UIView *aSubView in _videoPlayer.view.subviews) {
-                aSubView.backgroundColor = [UIColor clearColor];
-            }
-        }
-    }
-}
-
--(void)removeIJKVieoPlayer
-{
-    [_videoPlayer shutdown];
-    _videoPlayer = nil;
 }
 
 
@@ -171,8 +103,7 @@
         }
         if (!tracking && isTracking) {
             //添加延时，避免在setVideoUrl
-            [NSObject cancelPreviousPerformRequestsWithTarget:self];
-            [self performSelector:@selector(endTrack) withObject:nil afterDelay:.3];
+            [self endTrack];
         }
         isTracking = tracking;
         
@@ -181,20 +112,18 @@
 
 -(void)beginTrack
 {
-    //开始滑
+    //开始滑动
     shouldCheckOnTracking = YES;
-     NSLog(@"%@  beginTrack", _identifier);
+    //NSLog(@"%@  beginTrack", _identifier);
 }
 
 
 -(void)onTracking
 {
     //滑动过程
-
-    if (shouldCheckOnTracking && ![self isDisplayedInScreen:_videoPlayer.view]) {
-        for (ZHShortPlayerView *view in dataArrray) {
-            [view shutDownPlay];
-        }
+    
+    if (shouldCheckOnTracking && ![self isDisplayedInScreen:lastView]) {
+        [lastView shutDownPlay];
         shouldCheckOnTracking = NO;
     }
     NSLog(@"%@  onTracking", _identifier);
@@ -203,30 +132,15 @@
 -(void)endTrack
 {
     //滑动结束
-    ZHShortPlayerView *pview = nil;
-    CGPoint lastPos =CGPointZero;
-    
     shouldCheckOnTracking = NO;
-    for (ZHShortPlayerView *view in dataArrray) {
-        if (![self isDisplayedInScreen:view]) {
-            [view shutDownPlay];
-        } else {
-            CGPoint pos = [view convertPoint:view.center toView:[UIApplication sharedApplication].keyWindow];
-            if (fabs(lastPos.y-CenterY) > fabs(pos.y-CenterY)) {
-                lastPos = pos;
-                pview = view;
-            }
-        }
-    }
-    
+    ZHShortPlayerView *pview = [self getCurrentShouldPlayView];
     if (pview) {
-        for (ZHShortPlayerView *view in dataArrray) {
-            if (view != pview) {
-                [view shutDownPlay];
-            }
+        if (lastView && lastView != pview) {
+            [lastView shutDownPlay];
         }
         [self resetIJKVieoPlayWithUrl:pview.videoUrl];
         [pview play];
+        lastView = pview;
     }
     NSLog(@"%@  endTrack", _identifier);
 }
@@ -234,16 +148,7 @@
 -(void)becomeVisible
 {
     //切换到可见
-    ZHShortPlayerView *pview = nil;
-    CGPoint lastPos =CGPointZero;
-    for (ZHShortPlayerView *view in dataArrray) {
-        CGPoint pos = [view convertPoint:view.center toView:[UIApplication sharedApplication].keyWindow];
-        if (fabs(lastPos.y-CenterY) > fabs(pos.y-CenterY)) {
-            lastPos = pos;
-            pview = view;
-        }
-    }
-    
+    ZHShortPlayerView *pview = [self getCurrentShouldPlayView];
     if (pview) {
         [self resetIJKVieoPlayWithUrl:pview.videoUrl];
         [pview play];
@@ -254,8 +159,47 @@
 -(void)becomeInvisible
 {
     //切换到不可见
-    [self removeIJKVieoPlayer];
+    [_videoPlayer shutdown];
     NSLog(@"%@  becomeInvisible", _identifier);
+}
+
+-(void)resetIJKVieoPlayWithUrl:(NSString *)url
+{
+
+    @autoreleasepool {
+        if (_videoPlayer == nil || _videoPlayer.view.superview == nil
+            || ![_videoPlayer.playUrl.absoluteString isEqualToString:url] || _videoPlayer.isShutdown) {
+            [_videoPlayer shutdown];
+            _videoPlayer = [[IJKAVMoviePlayerController alloc] initWithContentURLString:url];
+            _videoPlayer.view.userInteractionEnabled = NO;
+            _videoPlayer.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            _videoPlayer.scalingMode = IJKMPMovieScalingModeAspectFit;
+            _videoPlayer.view.autoresizesSubviews = YES;
+            _videoPlayer.shouldAutoplay = YES;
+            _videoPlayer.repeat = YES;
+            [_videoPlayer setPauseInBackground:YES];
+            _videoPlayer.view.backgroundColor = [UIColor clearColor];
+            for(UIView *aSubView in _videoPlayer.view.subviews) {
+                aSubView.backgroundColor = [UIColor clearColor];
+            }
+        }
+    }
+}
+
+-(ZHShortPlayerView *)getCurrentShouldPlayView
+{
+    ZHShortPlayerView *pview = nil;
+    CGPoint lastPos =CGPointZero;
+    for (ZHShortPlayerView *view in dataArrray) {
+        if ([self isDisplayedInScreen:view]) {
+            CGPoint pos = [view convertPoint:view.center toView:[UIApplication sharedApplication].keyWindow];
+            if (fabs(lastPos.y-CenterY) > fabs(pos.y-CenterY)) {
+                lastPos = pos;
+                pview = view;
+            }
+        }
+    }
+    return pview;
 }
 
 // 判断View是否显示在屏幕上
@@ -292,42 +236,52 @@
 }
 
 
-- (void)registerApplicationObservers
+- (void)registerObservers
 {
-    
+    //监听应用器状态
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-    [_registeredNotifications addObject:UIApplicationWillEnterForegroundNotification];
+    [registeredNotifications addObject:UIApplicationWillEnterForegroundNotification];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationDidBecomeActive)
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
-    [_registeredNotifications addObject:UIApplicationDidBecomeActiveNotification];
+    [registeredNotifications addObject:UIApplicationDidBecomeActiveNotification];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillResignActive)
                                                  name:UIApplicationWillResignActiveNotification
                                                object:nil];
-    [_registeredNotifications addObject:UIApplicationWillResignActiveNotification];
+    [registeredNotifications addObject:UIApplicationWillResignActiveNotification];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationDidEnterBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
-    [_registeredNotifications addObject:UIApplicationDidEnterBackgroundNotification];
+    [registeredNotifications addObject:UIApplicationDidEnterBackgroundNotification];
+    
+    
+    //监听滑动状态变化
+    __weak typeof(self) weakSelf = self;
+    observe = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+        [weakSelf checkPlayState];
+    });
+    CFRunLoopAddObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
+    CFRelease(observe);
     
 }
 
-- (void)unregisterApplicationObservers
+- (void)unregisterObservers
 {
-    for (NSString *name in _registeredNotifications) {
+    for (NSString *name in registeredNotifications) {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:name
                                                       object:nil];
     }
+    CFRunLoopRemoveObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
 }
 
 
@@ -356,6 +310,32 @@
 {
     NSLog(@"ZHShortVideoManager:applicationDidEnterBackground: %d\n", (int)[UIApplication sharedApplication].applicationState);
 
+}
+
+-(void)addPlayerView:(ZHShortPlayerView *)view
+{
+    for (ZHShortPlayerView *item in dataArrray) {
+        if ([view.videoUrl isEqualToString:item.videoUrl]) {
+            [dataArrray removeObject:item];
+            break;
+        }
+    }
+    [dataArrray addObject:view];
+}
+
+-(void)removePlayerView:(ZHShortPlayerView *)view
+{
+    [dataArrray removeObject:view];
+    
+    if (dataArrray.count <= 0) {
+        [[ZHShortVideoManagerDequeue sharecInstance] removeManagerWithIdentifier:view.identifier];
+    }
+}
+
+-(void)removeAllPlayerView
+{
+    
+    [dataArrray removeAllObjects];
 }
 
 @end

@@ -62,6 +62,7 @@
 {
     CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ViewController"];
     if (cell == nil) {
+        //重要不同的tableView, identifier必须不同, 否则会混乱
         cell = [[CustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ViewController"];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;

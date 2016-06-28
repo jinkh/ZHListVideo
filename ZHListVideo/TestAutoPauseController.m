@@ -52,6 +52,7 @@
 {
     CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TestAutoPauseController"];
     if (cell == nil) {
+        //重要不同的tableView, identifier必须不同, 否则会混乱
         cell = [[CustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TestAutoPauseController"];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;

@@ -21,6 +21,7 @@
 -(void)dealloc
 {
     NSLog(@"release class:%@",NSStringFromClass([self class]));
+    // 重要, 必须对videoView进行destory，否则内存无法释放
     [videoView destroy];
 }
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier

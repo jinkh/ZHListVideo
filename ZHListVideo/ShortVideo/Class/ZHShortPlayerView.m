@@ -17,8 +17,6 @@
     
     ZHShortVideoManager *manager;
     
-    BOOL isCurrentPlay;
-    
 }
 
 @end
@@ -49,11 +47,11 @@
 {
     if (self = [super initWithFrame:frame]) {
         _videoUrl = [[NSString alloc] init];
-        isCurrentPlay = NO;
         self.backgroundColor = [UIColor blackColor];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         
+        //重要不同的tableView, identifier必须不同, 否则会混乱
         _identifier = [[NSString alloc] initWithFormat:@"%@", ident];
         
         manager = [[ZHShortVideoManagerDequeue sharecInstance] dequeueManagerWithIdentifier:_identifier];
@@ -79,8 +77,8 @@
 -(void)setVideoUrl:(NSString *)sourceUrl coverUrl:(NSString *)coverUrl
 {
     @synchronized(_videoUrl) {
-        //来自重用cell，并且实在播放，先停止播放
-        if (_videoUrl.length > 0 && isCurrentPlay) {
+        //来自重用cell
+        if (_videoUrl.length > 0) {
             [self shutDownPlay];
         }
         _videoUrl = [[NSString alloc] initWithFormat:@"%@",sourceUrl];
@@ -114,7 +112,6 @@
             [manager.videoPlayer shutdown];
         }
         [controllView setControllState:ShortControllStateNormal];
-        isCurrentPlay = NO;
     }
 }
 
@@ -141,12 +138,9 @@
 -(void)play
 {
     @synchronized(_videoUrl) {
-        NSLog(@"---player--window = %@", NSStringFromClass([self.superview class]));
-        
         manager.videoPlayer.view.frame = self.bounds;
         controllView.frame = self.bounds;
         [controllView setControllState:ShortControllStateLoading];
-        isCurrentPlay = YES;
         
         if ([_videoUrl isEqualToString:manager.videoPlayer.playUrl.absoluteString]) {
             if (manager.videoPlayer.currentPlaybackTime <= 0) {

@@ -22,8 +22,6 @@
 
 -(void)resetIJKVieoPlayWithUrl:(NSString *)url;
 
--(void)removeIJKVieoPlayer;
-
 @property (strong, readonly)  NSString *identifier;
 
 @property (strong, readonly) IJKAVMoviePlayerController *videoPlayer;
