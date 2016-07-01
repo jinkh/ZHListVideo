@@ -114,7 +114,7 @@
 {
     //开始滑动
     shouldCheckOnTracking = YES;
-    //NSLog(@"%@  beginTrack", _identifier);
+    NSLog(@"%@  beginTrack", _identifier);
 }
 
 
