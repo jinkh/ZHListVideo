@@ -39,6 +39,12 @@
     myTableView.dataSource = self;
 //    myTableView.scrollsToTop = NO;
     myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    if (@available(iOS 11.0, *)) {
+        myTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        myTableView.estimatedRowHeight = 0;
+        myTableView.estimatedSectionHeaderHeight = 0;
+        myTableView.estimatedSectionFooterHeight = 0;
+    }
     [self.view addSubview:myTableView];
     
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"jump" style:UIBarButtonItemStylePlain target:self action:@selector(jumpAction:)];

@@ -35,7 +35,7 @@
 
 -(ZHShortVideoManager *)dequeueManagerWithIdentifier:(NSString *)ident;
 
--(void)addManager:(ZHShortVideoManager *)manaer;
+-(void)addManager:(ZHShortVideoManager *)manager;
 
 -(void)removeManagerWithIdentifier:(NSString *)identifier;
 

@@ -287,6 +287,7 @@
 				TargetAttributes = {
 					5AAC019C1CA23DEF001CF56D = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = SCS36358A3;
 					};
 				};
 			};
@@ -452,11 +453,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = SCS36358A3;
 				GCC_PREFIX_HEADER = ZHListVideo/PrefixHeader.pch;
 				INFOPLIST_FILE = ZHListVideo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.momo.BaoZouTV;
+				PRODUCT_BUNDLE_IDENTIFIER = com.momo.BaoZouTV.jkh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -466,11 +468,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = SCS36358A3;
 				GCC_PREFIX_HEADER = ZHListVideo/PrefixHeader.pch;
 				INFOPLIST_FILE = ZHListVideo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.momo.BaoZouTV;
+				PRODUCT_BUNDLE_IDENTIFIER = com.momo.BaoZouTV.jkh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

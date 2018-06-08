@@ -28,6 +28,7 @@
 {
     [self shutDownPlay];
     [manager removePlayerView:self];
+     NSLog(@"release class:%@",NSStringFromClass([self class]));
     
 }
 -(void)dealloc

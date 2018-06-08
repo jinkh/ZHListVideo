@@ -8,7 +8,7 @@
 
 #import "ZHShortVideoManager.h"
 
-#define CenterY (32+[[UIScreen mainScreen] bounds].size.height*.5)
+#define CenterY ([[UIScreen mainScreen] bounds].size.height*.5)
 
 
 @interface ZHShortVideoManager()
@@ -21,11 +21,9 @@
     
     BOOL  isShowInWindow;
     
-    NSMutableArray *dataArrray;
+    NSHashTable *dataArrray;
     
     CFRunLoopObserverRef observe;
-    
-    NSMutableArray *registeredNotifications;
 
     __weak ZHShortPlayerView *lastView;
     
@@ -48,9 +46,8 @@
         isTracking = NO;
         isShowInWindow = NO;
         shouldCheckOnTracking = NO;
-        dataArrray = [[NSMutableArray alloc] init];
+        dataArrray = [NSHashTable hashTableWithOptions:NSPointerFunctionsWeakMemory];
         _identifier = [[NSString alloc] initWithFormat:@"%@", ident];
-        registeredNotifications = [[NSMutableArray alloc] init];
         
         //初始化播放器
         [self resetIJKVieoPlayWithUrl:@""];
@@ -78,8 +75,13 @@
         }
         
         //页面切换后，不可见
-        ZHShortPlayerView *chekView = dataArrray.firstObject;
-        BOOL showInWindow = chekView.window == nil ? NO : YES;
+        BOOL showInWindow = NO;
+        for (ZHShortPlayerView *view in dataArrray) {
+            if (view.window) {
+                showInWindow = YES;
+                break;
+            }
+        }
         
         if (isShowInWindow && !showInWindow) {
             [self becomeInvisible];
@@ -192,11 +194,15 @@
 -(ZHShortPlayerView *)getCurrentShouldPlayView
 {
     ZHShortPlayerView *pview = nil;
-    CGPoint lastPos =CGPointZero;
+    CGPoint lastPos = CGPointZero;
     for (ZHShortPlayerView *view in dataArrray) {
         if ([self isDisplayedInScreen:view]) {
             CGPoint pos = [view convertPoint:view.center toView:[UIApplication sharedApplication].keyWindow];
-            if (fabs(lastPos.y-CenterY) > fabs(pos.y-CenterY)) {
+            if (CGPointEqualToPoint(lastPos, CGPointZero)) {
+                lastPos = pos;
+                pview = view;
+            } else if (fabs(lastPos.y-CenterY > 0 ? lastPos.y-CenterY-pview.frame.size.height*.5 : CenterY-lastPos.y-pview.frame.size.height*.5)
+                       > fabs(pos.y-CenterY > 0 ? pos.y-CenterY-view.frame.size.height*.5 : CenterY-pos.y-view.frame.size.height*.5)) {
                 lastPos = pos;
                 pview = view;
             }
@@ -246,25 +252,21 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-    [registeredNotifications addObject:UIApplicationWillEnterForegroundNotification];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationDidBecomeActive)
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
-    [registeredNotifications addObject:UIApplicationDidBecomeActiveNotification];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillResignActive)
                                                  name:UIApplicationWillResignActiveNotification
                                                object:nil];
-    [registeredNotifications addObject:UIApplicationWillResignActiveNotification];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationDidEnterBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
-    [registeredNotifications addObject:UIApplicationDidEnterBackgroundNotification];
     
 
     //监听滚动到顶部
@@ -272,7 +274,6 @@
                                              selector:@selector(didScrollToTop:)
                                                  name:ZHScrollToTopNotification
                                                object:nil];
-    [registeredNotifications addObject:ZHScrollToTopNotification];
     
     
     //监听滑动状态变化
@@ -287,11 +288,7 @@
 
 - (void)unregisterObservers
 {
-    for (NSString *name in registeredNotifications) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:name
-                                                      object:nil];
-    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRunLoopRemoveObserver(CFRunLoopGetCurrent(), observe, kCFRunLoopCommonModes);
 }
 
@@ -356,7 +353,7 @@
 
 @implementation ZHShortVideoManagerDequeue
 
-static NSMutableDictionary *resumeManagerData;
+static NSMapTable *resumeManagerData;
 
 -(void)dealloc
 {
@@ -371,7 +368,7 @@ static NSMutableDictionary *resumeManagerData;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedClient = [[ZHShortVideoManagerDequeue alloc] init];
-        resumeManagerData =  [[NSMutableDictionary alloc] init];
+        resumeManagerData =  [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsWeakMemory];
         
     });
     return sharedClient;
@@ -390,13 +387,13 @@ static NSMutableDictionary *resumeManagerData;
     return tmpValue;
 }
 
--(void)addManager:(ZHShortVideoManager *)manaer
+-(void)addManager:(ZHShortVideoManager *)manager
 {
-    id tmpValue = [resumeManagerData objectForKey:manaer.identifier];
+    id tmpValue = [resumeManagerData objectForKey:manager.identifier];
     
     if (tmpValue == nil || tmpValue == [NSNull null])
     {
-        [resumeManagerData setObject:manaer forKey:manaer.identifier];
+        [resumeManagerData setObject:manager forKey:manager.identifier];
     }
 }
 
